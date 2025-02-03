@@ -1,0 +1,24 @@
+@import "~bootstrap/scss/bootstrap";
+
+$primary : #6c5ce7;
+$secondary : #d63031;
+$ternary : #74b9ff;
+$warning : #fdcb6e;
+$success : #00b894;
+$danger : #e17055;
+
+$textColor : #000;
+$textSpan : rgba(0,0,0, 0.4);
+
+body {
+    background-color: $primary;
+
+    p {
+        color: $textColor;
+
+        span {
+            color: $textSpan;
+        }
+
+    }
+}

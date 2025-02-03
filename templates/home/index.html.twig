@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page d'accueil{% endblock %}
+
+{% block body %}
+
+<div class="example-wrapper">
+
+    {# ITÉRATIONS #}
+    <ul>
+        {% for article in articles %}
+            <li> <a href="{{ path('show_article', { id : article.id }) }}">{{article.title|upper}}</a> </li>
+        {% else %}
+            <p>Aucun article disponible</p>
+        {% endfor %}
+    </ul>
+
+    {# CONDITIONS #}
+    {% if articles|length > 0 %} 
+        <p>{{articles|length}}</p>
+    {% else %}
+        <p> Pas d'articles dans la liste </p>
+    {% endif %}
+
+</div>
+{% endblock %}

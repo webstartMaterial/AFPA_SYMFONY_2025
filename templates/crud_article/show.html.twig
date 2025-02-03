@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Article{% endblock %}
+
+{% block body %}
+    <h1>Article</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ article.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ article.title }}</td>
+            </tr>
+            <tr>
+                <th>Picture</th>
+                <td>{{ article.picture }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ article.description }}</td>
+            </tr>
+            <tr>
+                <th>Stock</th>
+                <td>{{ article.stock }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ article.price }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_crud_article_index') }}">back to list</a>
+
+    <a href="{{ path('app_crud_article_edit', {'id': article.id}) }}">edit</a>
+
+    {{ include('crud_article/_delete_form.html.twig') }}
+{% endblock %}

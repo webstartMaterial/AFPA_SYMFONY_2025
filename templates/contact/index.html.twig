@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ContactController!{% endblock %}
+
+{% form_theme contactForm 'bootstrap_5_layout.html.twig' %}
+
+
+{% block body %}
+
+    <div class="row col-md-8 mx-auto mt-5">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{message}}
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if form_errors(contactForm) %}
+        <div class="alert alert-danger">
+            {{ form_errors(contactForm) }}
+        </div>
+    {% endif %}
+
+    <div class="row col-md-8 mx-auto mt-5"> 
+        {{ form(contactForm, {'attr' : {'class' :'row'}}) }}
+    </div>
+    
+
+{% endblock %}

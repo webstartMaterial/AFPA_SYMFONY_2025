@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ArticleController!{% endblock %}
+
+{% block body %}
+
+    <ul>
+
+        <li> Titre : {{article.title}}</li>
+        <li> Description : {{article.description}}</li>
+        <li> 
+            <img width="200" src="{{asset(article.picture)}}" />
+        </li>
+        <li> Stock :{{article.stock}}</li>
+        <li> Price : {{article.price}}</li>
+        <li> Category : {{article.category.name}}</li>
+
+    </ul>
+
+    <div class="card" style="width: 18rem;">
+    <img src="..." class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+    </div>
+
+
+{% endblock %}
