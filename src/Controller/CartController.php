@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Order;
+use App\Entity\OrderDetails;
 use App\Repository\ArticleRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,9 +17,20 @@ final class CartController extends AbstractController
     public function index(Request $request): Response
     {
         $session = $request->getSession();
+        $cartSession = $session->get('cart');
+        $total_amount = 0;
+
+        if(!is_null($cartSession) && count($cartSession["id"]) > 0) {
+
+            for ($i=0; $i < count($cartSession["id"]); $i++) { 
+                $total_amount += $cartSession["price"][$i] * $cartSession["quantity"][$i];
+            }
+
+        }
+
         return $this->render('cart/index.html.twig', [
-            'cart_items' => $session->get('cart'),
-            'total_amount' => 0
+            'cart_items' => $cartSession,
+            'total_amount' => $total_amount
         ]);
     }
 
@@ -94,5 +108,78 @@ final class CartController extends AbstractController
 
         // Rediriger vers la page du panier
         return $this->redirectToRoute('app_cart');
+    }
+
+    #[Route('/cart/modify/quantity', name: 'app_modify_cart', methods: ['POST'])]
+    public function modifyQuantityCart(Request $request, ArticleRepository $articleRepository): Response
+    {
+
+        // récupérer la valeur des paramètres post depuis un formulaire
+        $idArticle = $request->request->get('idArticle');
+        $quantity = $request->request->get('quantity');
+
+        // récupérer la session
+        $session = $request->getSession();
+        $cartSession = $session->get('cart', []);
+
+        if (($key = array_search($idArticle, $cartSession['id'])) !== false) {
+
+            // mettre à jour la quantité
+            $cartSession['quantity'][$key] = $quantity;
+
+            // mettre à jour la session
+            $session->set('cart', $cartSession);
+
+            $this->addFlash('success', 'La quantité a bien été modifié !');
+
+        }
+
+        // Rediriger vers la page du panier
+        return $this->redirectToRoute('app_cart');
+
+    }
+
+    #[Route('/payment', name: 'app_validate_cart', methods: ['POST'])]
+    public function validateCart(Request $request, ArticleRepository $articleRepository, EntityManagerInterface $entityManager): Response
+    {
+
+        // récupérer la valeur des paramètres post depuis un formulaire
+        $totalAmount = $request->request->get('total_amount');
+
+        // récupérer la session
+        $session = $request->getSession();
+        $cartSession = $session->get('cart', []);
+
+        if(!is_null($cartSession) && count($cartSession["id"]) > 0) {
+
+            $order = new Order();
+            $order->setAmount($totalAmount);
+            $order->setDate(new \DateTime());
+            $order->setStatus("En cours");
+            $entityManager->persist($order);
+
+            for ($i=0; $i < count($cartSession["id"]); $i++) { 
+                $order_detail = new OrderDetails();
+
+                $product = $articleRepository->find($cartSession["id"][$i]); // je récupère le produit en bdd pour le lier au détail de commande
+                $order_detail->setArticle($product );
+                $order_detail->setQuantity($cartSession["quantity"][$i]);
+                $order_detail->setRelatedOrder($order);
+                $order_detail->setSubtotal( $cartSession["quantity"][$i] * $cartSession["price"][$i] );
+                $entityManager->persist($order_detail);
+
+            }
+
+            $entityManager->flush();
+
+        }
+
+        
+        $this->addFlash('success', 'La commande a bien été effectuée !');
+
+
+        // Rediriger vers la page du panier
+        return $this->redirectToRoute('app_profile');
+
     }
 }

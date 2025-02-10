@@ -7,6 +7,14 @@
 <div class="container my-5">
     <h2 class="mb-4">Votre panier</h2>
 
+    <div class="row col-md-8 mx-auto mt-5">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{message}}
+            </div>
+        {% endfor %}
+    </div>
+
     {% if cart_items is not empty %}
         <table class="table table-bordered table-hover">
             <thead class="table-light">
@@ -23,7 +31,8 @@
                     <tr>
                         <td>{{ cart_items.title[i] }}</td>
                         <td>
-                            <form method="post" action="#" class="d-inline">
+                            <form method="post" action="{{path('app_modify_cart')}}" class="d-inline">
+                            <input type="hidden" value="{{cart_items.id[i]}}" name="idArticle" />
                                 <input type="number" name="quantity" value="{{ cart_items.quantity[i] }}" min="1" class="form-control form-control-sm d-inline-block w-50" />
                                 <button type="submit" class="btn btn-sm btn-primary">Modifier</button>
                             </form>
@@ -46,7 +55,10 @@
 
         <div class="mt-4 d-flex justify-content-between">
             <a href="{{ path('app_home') }}" class="btn btn-secondary">Continuer vos achats</a>
-            <a href="#" class="btn btn-success">Passer à la commande</a>
+            <form method="post" action="{{path('app_validate_cart')}}" class="d-inline">
+                <input type="hidden" name="total_amount" value="{{total_amount}}"/>
+                <button type="submit" class="btn btn-success">Passer à la commande</button>
+            </form>
         </div>
     {% else %}
         <div class="alert alert-warning text-center">
