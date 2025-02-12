@@ -9,6 +9,7 @@ use App\Repository\OrderDetailsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Service\EmailService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -149,7 +150,9 @@ final class CartController extends AbstractController
         ArticleRepository $articleRepository,
         OrderDetailsRepository $orderDetailsRepository,
         EntityManagerInterface $entityManager,
-        MailerInterface $mailer
+        MailerInterface $mailer,
+        PdfGeneratorService $pdfGeneratorService,
+        EmailService $emailService,
     ): Response {
 
         // récupérer la valeur des paramètres post depuis un formulaire
@@ -181,49 +184,26 @@ final class CartController extends AbstractController
 
             $entityManager->flush();
 
-            // 1 - mettre en place les options du pdf
-            $pdfOptions = new Options();
-            $pdfOptions->set(['defaultFont' => 'Arial', 'enable_remote' => true]);
-
-            // 2 - je créer le pdf
-            $domPdf = new Dompdf($pdfOptions);
-
-            // 3 - préparer le template
-            $html = $this->renderView('invoice/index.html.twig', [
+            $fileName =  $this->getUser()->getId() . "_" . $this->getUser()->getEmail() . "_invoice" . $order->getId() . ".pdf";
+            
+            $invoicePDF = $pdfGeneratorService->generatePdf(            [
                 'user' => $this->getUser(),
                 'total_amount' => $totalAmount,
                 'date' => new \DateTime('Y-m-d'),
                 'order_details' => $orderDetailsRepository->findBy(['relatedOrder' => $order->getId()])
-            ]);
+            ], $fileName, 'invoice/index.html.twig', 'uploads/invoices');
 
-            $domPdf->loadHtml($html);
-            $domPdf->setPaper('A4', 'portrait');
-
-            $domPdf->render();
-            $invoicePDF = $domPdf->output();
-
-            if (!file_exists('uploads/invoices')) {
-                mkdir('uploads/invoices');
-            }
-
-            $pathPDF = $this->getUser()->getId() . "_" . $this->getUser()->getEmail() . "_invoice" . $order->getId() . ".pdf";
-            file_put_contents($pathPDF, $invoicePDF);
-
-            $email = (new TemplatedEmail())
-                ->from($this->getParameter('app.mailAddress'))
-                ->to($this->getParameter('app.mailAddress'))
-                ->cc($this->getUser()->getEmail())
-                ->subject("Merci pour votre achat !")
-                ->htmlTemplate("invoice/email.html.twig")
-                ->attach($invoicePDF, sprintf('facture-' . $order->getId() . 'ecosymfony.pdf', date("Y-m-d")))
-                ->context([
+            $emailService->sendEmail(
+                $this->getUser()->getEmail(), 
+                $invoicePDF, sprintf('facture-' . $order->getId() . 'ecosymfony.pdf'),
+                [
                     'user' => $this->getUser(),
                     'total_amount' => $totalAmount,
                     'date' => new \DateTime('Y-m-d'),
                     'order_details' => $orderDetailsRepository->findBy(['relatedOrder' => $order->getId()])
-                ]);
-
-            $mailer->send($email);
+                ], 
+                "Merci pour votre achat !", 
+                "invoice/email.html.twig");
 
         }
 

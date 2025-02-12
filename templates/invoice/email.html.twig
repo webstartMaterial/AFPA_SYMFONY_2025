@@ -1,1 +1,106 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votre Facture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+            margin: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #007BFF;
+        }
+        .info {
+            margin-bottom: 20px;
+        }
+        .info p {
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .total {
+            font-weight: bold;
+            text-align: right;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Merci pour votre achat !</h1>
+        <p>Bonjour {{ user.email }},</p>
+
+        <div class="info">
+            <p><strong>Date :</strong> {{ date|date('d/m/Y') }}</p>
+            <p><strong>Commande N° :</strong> {{ order.id }}</p>
+        </div>
+
+        <h3>Détails de votre commande :</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Article</th>
+                    <th>Quantité</th>
+                    <th>Prix Unitaire</th>
+                    <th>Sous-total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_details %}
+                    <tr>
+                        <td>{{ item.article.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.article.price|number_format(2, ',', ' ') }} €</td>
+                        <td>{{ (item.quantity * item.article.price)|number_format(2, ',', ' ') }} €</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3" class="total">Total :</td>
+                    <td class="total">{{ total_amount|number_format(2, ',', ' ') }} €</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Votre facture est attachée en pièce jointe.</p>
+
+        <div class="footer">
+            <p>Entreprise XYZ - SIRET : 123456789 - contact@votreentreprise.com</p>
+            <p>Merci pour votre confiance !</p>
+        </div>
+    </div>
+</body>
+</html>
