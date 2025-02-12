@@ -30,6 +30,21 @@ class EmailService {
         $this->mailer->send($email);
 
     }
+
+    public function sendEmailNoAttachement($emailUser, $data, $subject, $template) {
+
+
+        $email = (new TemplatedEmail())
+        ->from($this->adminEmail)
+        ->to($this->adminEmail)
+        ->cc($emailUser)
+        ->subject($subject)
+        ->htmlTemplate($template)
+        ->context($data);
+
+        $this->mailer->send($email);
+
+    }
     
 }
 

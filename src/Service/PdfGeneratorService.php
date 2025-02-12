@@ -43,7 +43,7 @@ class PdfGeneratorService {
 
         file_put_contents($fileName, $invoicePDF);
 
-        return $domPdf->output();
+        return $invoicePDF;
 
     }
 
