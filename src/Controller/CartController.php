@@ -82,6 +82,7 @@ final class CartController extends AbstractController
     #[Route('/cart/delete/{idArticle}', name: 'app_delete_cart')]
     public function deleteProductFromCart(int $idArticle, Request $request, ArticleRepository $articleRepository): Response
     {
+
         // récupérer la session
         $session = $request->getSession();
         $cartSession = $session->get('cart', []);
