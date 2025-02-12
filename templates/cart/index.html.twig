@@ -15,7 +15,7 @@
         {% endfor %}
     </div>
 
-    {% if cart_items["id"] is not empty %}
+    {% if cart_items["id"] is defined and cart_items["id"] is not empty %}
         <table class="table table-bordered table-hover">
             <thead class="table-light">
                 <tr>

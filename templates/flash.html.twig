@@ -1,0 +1,7 @@
+    <div class="row col-md-8 mx-auto mt-5">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{message}}
+            </div>
+        {% endfor %}
+    </div>
