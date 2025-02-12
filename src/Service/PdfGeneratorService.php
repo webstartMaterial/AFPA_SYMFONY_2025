@@ -1,17 +1,21 @@
 <?php
 
 
-namespace Service;
+namespace App\Service;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Twig\Environment;
 
 class PdfGeneratorService {
 
     private Environment $twig;
+    private KernelInterface $kernel;
 
-    public function __construct(Environment $twig) {
+    public function __construct(Environment $twig, KernelInterface $kernelInterface) {
         $this->twig = $twig;
+        $this->kernel = $kernelInterface;
     }
 
     public function generatePdf($data, $fileName, $template, $destinationPath) {
@@ -32,8 +36,9 @@ class PdfGeneratorService {
         $domPdf->render();
         $invoicePDF = $domPdf->output();
 
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath);
+        $uploadDirectory = $this->kernel->getProjectDir() . "/public/" . $destinationPath;
+        if (!file_exists($uploadDirectory)) {
+            mkdir($uploadDirectory, 0777, true);
         }
 
         file_put_contents($fileName, $invoicePDF);

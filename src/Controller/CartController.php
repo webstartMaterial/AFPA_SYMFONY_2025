@@ -6,10 +6,9 @@ use App\Entity\Order;
 use App\Entity\OrderDetails;
 use App\Repository\ArticleRepository;
 use App\Repository\OrderDetailsRepository;
+use App\Service\EmailService;
+use App\Service\PdfGeneratorService;
 use Doctrine\ORM\EntityManagerInterface;
-use Dompdf\Dompdf;
-use Dompdf\Options;
-use Service\EmailService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -189,7 +188,7 @@ final class CartController extends AbstractController
             $invoicePDF = $pdfGeneratorService->generatePdf(            [
                 'user' => $this->getUser(),
                 'total_amount' => $totalAmount,
-                'date' => new \DateTime('Y-m-d'),
+                'date' => new \DateTime(),
                 'order_details' => $orderDetailsRepository->findBy(['relatedOrder' => $order->getId()])
             ], $fileName, 'invoice/index.html.twig', 'uploads/invoices');
 
@@ -199,8 +198,9 @@ final class CartController extends AbstractController
                 [
                     'user' => $this->getUser(),
                     'total_amount' => $totalAmount,
-                    'date' => new \DateTime('Y-m-d'),
-                    'order_details' => $orderDetailsRepository->findBy(['relatedOrder' => $order->getId()])
+                    'date' => new \DateTime(),
+                    'order_details' => $orderDetailsRepository->findBy(['relatedOrder' => $order->getId()]),
+                    'order' => $order
                 ], 
                 "Merci pour votre achat !", 
                 "invoice/email.html.twig");

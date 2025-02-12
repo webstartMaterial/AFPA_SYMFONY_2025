@@ -1,17 +1,17 @@
 <?php
 
-namespace Service;
+namespace App\Service;
 
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 
 class EmailService {
 
-    private $adminEmail;
+    private string $adminEmail;
     private MailerInterface $mailer;
 
-    public function __construct(string $adminEmail, MailerInterface $mailerInterface) {
-        $this->$adminEmail = $adminEmail;
+    public function __construct(MailerInterface $mailerInterface, string $adminEmail) {
+        $this->adminEmail = $adminEmail;
         $this->mailer = $mailerInterface;
     }
 
@@ -24,7 +24,7 @@ class EmailService {
         ->cc($emailUser)
         ->subject($subject)
         ->htmlTemplate($template)
-        ->attach($attachedFile, $nameFile , date("Y-m-d"))
+        ->attach($attachedFile, $nameFile)
         ->context($data);
 
         $this->mailer->send($email);

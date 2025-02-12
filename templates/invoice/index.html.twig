@@ -88,7 +88,7 @@
             <tbody>
                 {% for item in order_details %}
                     <tr>
-                        <td>{{ item.article.name }}</td>
+                        <td>{{ item.article.title }}</td>
                         <td>{{ item.quantity }}</td>
                         <td>{{ item.article.price|number_format(2, ',', ' ') }} €</td>
                         <td>{{ (item.quantity * item.article.price)|number_format(2, ',', ' ') }} €</td>
