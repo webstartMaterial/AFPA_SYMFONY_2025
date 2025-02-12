@@ -5,10 +5,14 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Entity\OrderDetails;
 use App\Repository\ArticleRepository;
+use App\Repository\OrderDetailsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class CartController extends AbstractController
@@ -20,9 +24,9 @@ final class CartController extends AbstractController
         $cartSession = $session->get('cart');
         $total_amount = 0;
 
-        if(!is_null($cartSession) && count($cartSession["id"]) > 0) {
+        if (!is_null($cartSession) && count($cartSession["id"]) > 0) {
 
-            for ($i=0; $i < count($cartSession["id"]); $i++) { 
+            for ($i = 0; $i < count($cartSession["id"]); $i++) {
                 $total_amount += $cartSession["price"][$i] * $cartSession["quantity"][$i];
             }
 
@@ -140,8 +144,13 @@ final class CartController extends AbstractController
     }
 
     #[Route('/payment', name: 'app_validate_cart', methods: ['POST'])]
-    public function validateCart(Request $request, ArticleRepository $articleRepository, EntityManagerInterface $entityManager): Response
-    {
+    public function validateCart(
+        Request $request,
+        ArticleRepository $articleRepository,
+        OrderDetailsRepository $orderDetailsRepository,
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer
+    ): Response {
 
         // récupérer la valeur des paramètres post depuis un formulaire
         $totalAmount = $request->request->get('total_amount');
@@ -150,7 +159,7 @@ final class CartController extends AbstractController
         $session = $request->getSession();
         $cartSession = $session->get('cart', []);
 
-        if(!is_null($cartSession) && count($cartSession["id"]) > 0) {
+        if (!is_null($cartSession) && count($cartSession["id"]) > 0) {
 
             $order = new Order();
             $order->setAmount($totalAmount);
@@ -158,25 +167,67 @@ final class CartController extends AbstractController
             $order->setStatus("En cours");
             $entityManager->persist($order);
 
-            for ($i=0; $i < count($cartSession["id"]); $i++) { 
+            for ($i = 0; $i < count($cartSession["id"]); $i++) {
                 $order_detail = new OrderDetails();
 
                 $product = $articleRepository->find($cartSession["id"][$i]); // je récupère le produit en bdd pour le lier au détail de commande
-                $order_detail->setArticle($product );
+                $order_detail->setArticle($product);
                 $order_detail->setQuantity($cartSession["quantity"][$i]);
                 $order_detail->setRelatedOrder($order);
-                $order_detail->setSubtotal( $cartSession["quantity"][$i] * $cartSession["price"][$i] );
+                $order_detail->setSubtotal($cartSession["quantity"][$i] * $cartSession["price"][$i]);
                 $entityManager->persist($order_detail);
 
             }
 
             $entityManager->flush();
 
+            // 1 - mettre en place les options du pdf
+            $pdfOptions = new Options();
+            $pdfOptions->set(['defaultFont' => 'Arial', 'enable_remote' => true]);
+
+            // 2 - je créer le pdf
+            $domPdf = new Dompdf($pdfOptions);
+
+            // 3 - préparer le template
+            $html = $this->renderView('invoice/index.html.twig', [
+                'user' => $this->getUser(),
+                'total_amount' => $totalAmount,
+                'date' => new \DateTime('Y-m-d'),
+                'order_details' => $orderDetailsRepository->findBy(['relatedOrder' => $order->getId()])
+            ]);
+
+            $domPdf->loadHtml($html);
+            $domPdf->setPaper('A4', 'portrait');
+
+            $domPdf->render();
+            $invoicePDF = $domPdf->output();
+
+            if (!file_exists('uploads/invoices')) {
+                mkdir('uploads/invoices');
+            }
+
+            $pathPDF = $this->getUser()->getId() . "_" . $this->getUser()->getEmail() . "_invoice" . $order->getId() . ".pdf";
+            file_put_contents($pathPDF, $invoicePDF);
+
+            $email = (new TemplatedEmail())
+                ->from($this->getParameter('app.mailAddress'))
+                ->to($this->getParameter('app.mailAddress'))
+                ->cc($this->getUser()->getEmail())
+                ->subject("Merci pour votre achat !")
+                ->htmlTemplate("invoice/email.html.twig")
+                ->attach($invoicePDF, sprintf('facture-' . $order->getId() . 'ecosymfony.pdf', date("Y-m-d")))
+                ->context([
+                    'user' => $this->getUser(),
+                    'total_amount' => $totalAmount,
+                    'date' => new \DateTime('Y-m-d'),
+                    'order_details' => $orderDetailsRepository->findBy(['relatedOrder' => $order->getId()])
+                ]);
+
+            $mailer->send($email);
+
         }
 
-        
         $this->addFlash('success', 'La commande a bien été effectuée !');
-
 
         // Rediriger vers la page du panier
         return $this->redirectToRoute('app_profile');

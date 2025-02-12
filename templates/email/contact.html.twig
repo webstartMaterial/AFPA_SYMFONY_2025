@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouveau message de contact</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        .header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+        .field label {
+            font-weight: bold;
+            color: #555;
+        }
+        .field p {
+            margin: 5px 0;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            Nouveau message de contact reçu
+        </div>
+        <div class="field">
+            <label>Prénom :</label>
+            <p>{{ contact.firstName }}</p>
+        </div>
+        <div class="field">
+            <label>Nom :</label>
+            <p>{{ contact.lastName }}</p>
+        </div>
+        <div class="field">
+            <label>Email :</label>
+            <p>{{ contact.email }}</p>
+        </div>
+        <div class="field">
+            <label>Motif :</label>
+            <p>{{ contact.object }}</p>
+        </div>
+        <div class="field">
+            <label>Message :</label>
+            <p>{{ contact.message | nl2br }}</p>
+        </div>
+        <div class="footer">
+            Cet email a été généré automatiquement à partir du formulaire de contact.
+        </div>
+    </div>
+</body>
+</html>
