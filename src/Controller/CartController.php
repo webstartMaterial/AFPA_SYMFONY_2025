@@ -38,6 +38,25 @@ final class CartController extends AbstractController
         ]);
     }
 
+    #[Route('/cart/empty', name: 'app_empty_cart', methods: ['GET'])]
+    public function emptyCart(Request $request): Response
+    {
+
+        // je récupère la session la session
+        $session = $request->getSession();
+        $session->set('cart', [
+            "id" => [],
+            "title" => [],
+            "description" => [],
+            "stock" => [],
+            "price" => [],
+            "picture" => [],
+            "quantity" => [],
+        ]); // je vide le panier
+        return $this->redirectToRoute('app_cart');
+
+    }
+
     #[Route('/cart/{idArticle}', name: 'app_add_cart', methods: ['POST'])]
     public function addArticleToCart(int $idArticle, Request $request, ArticleRepository $articleRepository): Response
     {

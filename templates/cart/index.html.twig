@@ -60,6 +60,9 @@
                 <button type="submit" class="btn btn-success">Passer à la commande</button>
             </form>
         </div>
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="{{ path('app_empty_cart') }}" class="btn btn-danger">Vider le panier</a>
+        </div>
     {% else %}
         <div class="alert alert-warning text-center">
             Votre panier est vide.

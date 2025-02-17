@@ -1,23 +1,65 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProfileController!{% endblock %}
+{% block title %}Mon Profil{% endblock %}
 
 {% block body %}
-
-    <div class="row col-md-8 mx-auto mt-5">
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success">
-                {{message}}
+<div class="container my-5">
+    <h2 class="mb-4">Mon Profil</h2>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h5 class="card-title">Informations personnelles</h5>
+                <p><strong>Nom :</strong> {{ app.user.lastName }}</p>
+                <p><strong>Prénom :</strong> {{ app.user.firstName }}</p>
+                <p><strong>Email :</strong> {{ app.user.email }}</p>
+                <p><strong>Téléphone :</strong> {{ app.user.phoneNumber }}</p>
+                <p><strong>Ville :</strong> {{ app.user.city }}</p>
+                <p><strong>Adresse :</strong> {{ app.user.address }}</p>
+                <p><strong>Code postal :</strong> {{ app.user.postalCode }}</p>
             </div>
-        {% endfor %}
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4">
+                <h5 class="mb-3">Modifier mes informations</h5>
+                <form method="post" action="#">
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">Prénom</label>
+                        <input type="text" class="form-control" id="firstName" name="firstName" value="{{ app.user.firstName }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Nom</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName" value="{{ app.user.lastName }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Téléphone</label>
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ app.user.phoneNumber }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ app.user.email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="city" class="form-label">Ville</label>
+                        <input type="text" class="form-control" id="city" name="city" value="{{ app.user.city }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Adresse</label>
+                        <input type="text" class="form-control" id="address" name="address" value="{{ app.user.address }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="postalCode" class="form-label">Code Postal</label>
+                        <input type="text" class="form-control" id="postalCode" name="postalCode" value="{{ app.user.postalCode }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                </form>
+            </div>
+        </div>
     </div>
-
-<ul>  
-
-    {# débuger #}
-    {# {{ dump(app.user) }} #}
-
-    <li>Email : {{app.user.email}} </p>
-
-</ul>
+</div>
 {% endblock %}
