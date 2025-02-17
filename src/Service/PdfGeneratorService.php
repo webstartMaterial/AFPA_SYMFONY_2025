@@ -41,7 +41,7 @@ class PdfGeneratorService {
             mkdir($uploadDirectory, 0777, true);
         }
 
-        file_put_contents($fileName, $invoicePDF);
+        file_put_contents($uploadDirectory . $fileName, $invoicePDF);
 
         return $invoicePDF;
 

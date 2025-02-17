@@ -55,10 +55,14 @@
 
         <div class="mt-4 d-flex justify-content-between">
             <a href="{{ path('app_home') }}" class="btn btn-secondary">Continuer vos achats</a>
-            <form method="post" action="{{path('app_validate_cart')}}" class="d-inline">
-                <input type="hidden" name="total_amount" value="{{total_amount}}"/>
-                <button type="submit" class="btn btn-success">Passer à la commande</button>
-            </form>
+            {% if app.user %}
+                <form method="post" action="{{path('app_validate_cart')}}" class="d-inline">
+                    <input type="hidden" name="total_amount" value="{{total_amount}}"/>
+                    <button type="submit" class="btn btn-success">Passer à la commande</button>
+                </form>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn btn-secondary">Se connecter</a>
+            {% endif %}
         </div>
         <div class="mt-4 d-flex justify-content-between">
             <a href="{{ path('app_empty_cart') }}" class="btn btn-danger">Vider le panier</a>

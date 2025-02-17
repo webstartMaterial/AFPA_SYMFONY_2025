@@ -32,6 +32,13 @@ class Order
     #[ORM\OneToMany(targetEntity: OrderDetails::class, mappedBy: 'relatedOrder')]
     private Collection $orderDetails;
 
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $invoice = null;
+
     public function __construct()
     {
         $this->orderDetails = new ArrayCollection();
@@ -104,6 +111,30 @@ class Order
                 $orderDetail->setRelatedOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getInvoice(): ?string
+    {
+        return $this->invoice;
+    }
+
+    public function setInvoice(string $invoice): static
+    {
+        $this->invoice = $invoice;
 
         return $this;
     }

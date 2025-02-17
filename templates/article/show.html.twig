@@ -1,51 +1,71 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ article.title }}{% endblock %}
+{% block title %}
+	{{ article.title }}
+{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow-sm p-3">
-                <img src="{{ asset(article.picture) }}" class="img-fluid rounded" alt="{{ article.title }}">
-            </div>
-        </div>
-        <div class="col-md-6">
-            <h1 class="mb-3">{{ article.title }}</h1>
-            <p class="text-muted">Catégorie : <span class="badge bg-secondary">{{ article.category.name }}</span></p>
-            <p class="lead">{{ article.description }}</p>
-            <p class="fs-4 fw-bold text-success">Prix : {{ article.price }} €</p>
-            <p class="fs-5">Stock disponible : <span class="fw-bold {{ article.stock > 0 ? 'text-success' : 'text-danger' }}">{{ article.stock }}</span></p>
-            
-            <div class="d-flex align-items-center gap-3 mt-4">
-                <form method="post" action="{{ path('app_add_cart', { idArticle : article.id }) }}">
-                    <button type="submit" class="btn btn-lg btn-primary">🛒 Ajouter au panier</button>
-                </form>
-                <a href="{{ path('app_home') }}" class="btn btn-lg btn-outline-secondary">↩ Retour à la boutique</a>
-            </div>
+	<div class="container my-5">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card shadow-sm p-3">
+					<img src="{{ asset(article.picture) }}" class="img-fluid rounded" alt="{{ article.title }}">
+				</div>
+			</div>
+			<div class="col-md-6">
+				<h1 class="mb-3">{{ article.title }}</h1>
+				<p class="text-muted">Catégorie :
+					<span class="badge bg-secondary">{{ article.category.name }}</span>
+				</p>
+				<p class="lead">{{ article.description }}</p>
+				<p class="fs-4 fw-bold text-success">Prix :
+					{{ article.price }}
+					€</p>
+				<p class="fs-5">Stock disponible :
+					<span class="fw-bold {{ article.stock > 0 ? 'text-success' : 'text-danger' }}">{{ article.stock }}</span>
+				</p>
 
-            <div class="mt-4">
-                <h5>Partagez ce produit :</h5>
-                <a href="#" class="btn btn-outline-primary btn-sm">📘 Facebook</a>
-                <a href="#" class="btn btn-outline-info btn-sm">🐦 Twitter</a>
-                <a href="#" class="btn btn-outline-danger btn-sm">📷 Instagram</a>
-            </div>
-        </div>
-    </div>
+				<div class="d-flex align-items-center gap-3 mt-4">
+					<form method="post" action="{{ path('app_add_cart', { idArticle : article.id }) }}">
+						<button type="submit" class="btn btn-lg btn-primary">🛒 Ajouter au panier</button>
+					</form>
+					<a href="{{ path('app_home') }}" class="btn btn-lg btn-outline-secondary">↩ Retour à la boutique</a>
+				</div>
 
-    <div class="mt-5">
-        <h3>Avis des clients</h3>
-        <div class="list-group">
-            {# {% for review in article.reviews %} #}
-                <div class="list-group-item">
-                    <h5 class="mb-1">Samih Habbani</h5>
-                    <small class="text-muted">12/09/1991</small>
-                    <p class="mb-1">Super contenu !</p>
-                </div>
-            {# {% else %} #}
-                <p class="text-muted">Aucun avis pour le moment.</p>
-            {# {% endfor %} #}
-        </div>
-    </div>
-</div>
+				<div class="mt-4">
+					<h5>Partagez ce produit :</h5>
+					<a href="#" class="btn btn-outline-primary btn-sm">📘 Facebook</a>
+					<a href="#" class="btn btn-outline-info btn-sm">🐦 Twitter</a>
+					<a href="#" class="btn btn-outline-danger btn-sm">📷 Instagram</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="mt-5">
+			<h3>Avis des clients</h3>
+			<div class="list-group">
+				{% for review in article.reviews %}
+					<div class="list-group-item">
+						<h5 class="mb-1">{{review.user.firstName}}</h5>
+						<small class="text-muted">{{review.createAt|date('d-m-Y')}}</small>
+						<p class="mb-1">{{review.comment}}</p>
+					</div>
+				{% else %}
+					<p class="text-muted">Aucun avis pour le moment.</p>
+				{% endfor %}
+
+				<!-- Formulaire d'Avis -->
+				{% if app.user %}
+					<div class="mt-4">
+						<h5>Laisser un avis</h5>
+						{{ form_start(formReview) }}
+						{{ form_widget(formReview) }}
+						{{ form_end(formReview) }}
+					</div>
+				{% else %}
+					<p class="text-muted">Connectez-vous pour laisser un avis.</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
 {% endblock %}

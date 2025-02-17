@@ -187,6 +187,11 @@ final class CartController extends AbstractController
             $order->setAmount($totalAmount);
             $order->setDate(new \DateTime());
             $order->setStatus("En cours");
+            $order->setUser($this->getUser()); // je lie la commande au user
+
+            $fileName = $this->getUser()->getId() . "_" . $this->getUser()->getLastName() . "_" . $this->getUser()->getFirstName() . "_invoice_" . time() . ".pdf";
+
+            $order->setInvoice($fileName);
             $entityManager->persist($order);
 
             for ($i = 0; $i < count($cartSession["id"]); $i++) {
@@ -203,14 +208,13 @@ final class CartController extends AbstractController
 
             $entityManager->flush();
 
-            $fileName =  $this->getUser()->getId() . "_" . $this->getUser()->getEmail() . "_invoice" . $order->getId() . ".pdf";
             
             $invoicePDF = $pdfGeneratorService->generatePdf(            [
                 'user' => $this->getUser(),
                 'total_amount' => $totalAmount,
                 'date' => new \DateTime(),
                 'order_details' => $orderDetailsRepository->findBy(['relatedOrder' => $order->getId()])
-            ], $fileName, 'invoice/index.html.twig', 'uploads/invoices');
+            ], $fileName, 'invoice/index.html.twig', 'uploads/invoices/');
 
             $emailService->sendEmail(
                 $this->getUser()->getEmail(), 
@@ -224,6 +228,17 @@ final class CartController extends AbstractController
                 ], 
                 "Merci pour votre achat !", 
                 "invoice/email.html.twig");
+
+                // je vide le panier
+                $session->set('cart', [
+                    "id" => [],
+                    "title" => [],
+                    "description" => [],
+                    "stock" => [],
+                    "price" => [],
+                    "picture" => [],
+                    "quantity" => [],
+                ]);
 
         }
 
