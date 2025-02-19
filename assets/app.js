@@ -1,4 +1,6 @@
-import './bootstrap.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min'; // Ce fichier inclut déjà Popper.js
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import './styles/app.scss';
 
 /*
