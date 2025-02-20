@@ -27,5 +27,9 @@
     {% else %}
         <div class="alert alert-warning">Aucun article disponible pour cette recherche.</div>
     {% endif %}
+
+    <div class="row">
+        {{knp_pagination_render(articles)}}
+    </div>
 </div>
 {% endblock %}

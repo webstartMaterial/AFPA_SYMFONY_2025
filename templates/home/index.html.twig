@@ -1,37 +1,100 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Accueil
+{% endblock %}
 
 {% block body %}
-<div class="container my-5">
+	<div
+		class="container my-5">
 
-    <!-- Section Hero -->
-    <header class="text-center my-5">
-        <h1>{{ 'about.title'|trans }}</h1>
-        <p class="lead">{{ 'about.description_1'|trans }}</p>
-        <a href="{{path('app_article')}}" class="btn btn-primary">Voir les articles</a>
-    </header>
+		<!-- Section Hero -->
+		<header class="text-center my-5">
+			<h1>{{ 'about.title'|trans }}</h1>
+			<p class="lead">{{ 'about.description_1'|trans }}</p>
+			<a href="{{path('app_article')}}" class="btn btn-primary">Voir les articles</a>
+		</header>
 
-    <!-- Liste des Articles -->
-    <section id="articles" class="mt-5">
-        <h2 class="mb-4">Derniers Articles</h2>
-        {% if articles|length > 0 %}
-            <div class="row">
-                {% for article in articles %}
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ article.title|upper }}</h5>
-                                <p class="card-text">{{ article.description|slice(0, 100) }}...</p>
-                                <a href="{{ path('show_article', { id : article.id }) }}" class="btn btn-primary">Lire plus</a>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="alert alert-warning">Aucun article disponible pour le moment.</div>
-        {% endif %}
-    </section>
-</div>
+		<!-- Liste des Articles -->
+		<section id="articles" class="mt-5">
+			<h2 class="mb-4">Derniers Articles</h2>
+			{% if articles|length > 0 %}
+				<div class="row">
+					{% for article in articles %}
+						<div class="col-md-4 mb-4">
+							<div class="card h-100">
+								<div class="card-body">
+									<h5 class="card-title">{{ article.title|upper }}
+										<!-- Icône cliquable pour ouvrir la modale -->
+										<div class="article-info" data-id="{{article.id}}"><i class="fa-solid fa-book-open text-primary" style="cursor:pointer;" ></i></div>
+									</h5>
+									<p class="card-text">{{ article.description|slice(0, 100) }}...</p>
+									<a href="{{ path('show_article', { id : article.id }) }}" class="btn btn-primary">Lire plus</a>
+								</div>
+							</div>
+
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<div class="alert alert-warning">Aucun article disponible pour le moment.</div>
+			{% endif %}
+		</section>
+	</div>
+
+	<!-- Modale Bootstrap -->
+	<!-- Modale Bootstrap Large -->
+	<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+		<div
+			class="modal-dialog modal-xl">
+			<!-- Utilisation de modal-xl pour une grande largeur -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="infoModalLabel">Grande Pop-up</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="card shadow-sm p-3">
+								<img src="" class="img-fluid rounded" alt="">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<h1 class="mb-3 title"></h1>
+							<p class="text-muted">Catégorie :
+								<span class="badge bg-secondary category"></span>
+							</p>
+							<p class="lead description"></p>
+							<p class="fs-4 fw-bold text-success price">Prix :
+								
+								€</p>
+							<p class="fs-5">Stock disponible :
+								<span class="fw-bold stock"></span>
+							</p>
+
+							<div class="d-flex align-items-center gap-3 mt-4">
+								<form method="post" action="">
+									<button type="submit" class="btn btn-lg btn-primary">🛒 Ajouter au panier</button>
+								</form>
+								<a href="{{ path('app_home') }}" class="btn btn-lg btn-outline-secondary">↩ Retour à la boutique</a>
+							</div>
+
+							<div class="mt-4">
+								<h5>Partagez ce produit :</h5>
+								<a href="#" class="btn btn-outline-primary btn-sm">📘 Facebook</a>
+								<a href="#" class="btn btn-outline-info btn-sm">🐦 Twitter</a>
+								<a href="#" class="btn btn-outline-danger btn-sm">📷 Instagram</a>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 {% endblock %}

@@ -68,41 +68,91 @@
 			<div class="col-md-8">
 				<div class="card shadow-sm p-4">
 					<h5 class="mb-3">Modifier mes informations</h5>
-					<form method="post" action="#">
-						<div class="mb-3">
-							<label for="firstName" class="form-label">Prénom</label>
-							<input type="text" class="form-control" id="firstName" name="firstName" value="{{ app.user.firstName }}" required>
+
+					{% for message in app.flashes('success') %}
+						<div class="alert alert-success">
+							{{ message }}
 						</div>
-						<div class="mb-3">
-							<label for="lastName" class="form-label">Nom</label>
-							<input type="text" class="form-control" id="lastName" name="lastName" value="{{ app.user.lastName }}" required>
+					{% endfor %}
+
+					{{ form_start(userProfileForm) }}
+					<div class="mb-3">
+						{{ form_label(userProfileForm.firstName) }}
+						{{ form_widget(userProfileForm.firstName, {'attr': {'class': 'form-control'}}) }}
+						<div class="text-danger"> {{ form_errors(userProfileForm.firstName) }}</div>
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(userProfileForm.lastName) }}
+						{{ form_widget(userProfileForm.lastName, {'attr': {'class': 'form-control'}}) }}
+						<div class="text-danger"> {{ form_errors(userProfileForm.lastName) }}</div>
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(userProfileForm.email) }}
+						{{ form_widget(userProfileForm.email, {'attr': {'class': 'form-control', 'readonly': 'readonly'}}) }}
+						<div class="text-danger"> {{ form_errors(userProfileForm.email) }}</div>
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(userProfileForm.phoneNumber) }}
+						{{ form_widget(userProfileForm.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+						<div class="text-danger"> {{ form_errors(userProfileForm.phoneNumber) }}</div>
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(userProfileForm.city) }}
+						{{ form_widget(userProfileForm.city, {'attr': {'class': 'form-control'}}) }}
+						<div class="text-danger"> {{ form_errors(userProfileForm.city) }}</div>
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(userProfileForm.address) }}
+						{{ form_widget(userProfileForm.address, {'attr': {'class': 'form-control'}}) }}
+						<div class="text-danger"> {{ form_errors(userProfileForm.address) }}</div>
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(userProfileForm.postalCode) }}
+						{{ form_widget(userProfileForm.postalCode, {'attr': {'class': 'form-control'}}) }}
+						<div class="text-danger"> {{ form_errors(userProfileForm.postalCode) }}</div>
+					</div>
+
+					{{ form_end(userProfileForm) }}
+
+				</div>
+
+				<div class="card shadow-sm p-4 mt-3">
+
+					<h2>Modifier mon mot de passe</h2>
+
+					{% for message in app.flashes('danger') %}
+						<div class="alert alert-danger">
+							{{ message }}
 						</div>
-						<div class="mb-3">
-							<label for="phoneNumber" class="form-label">Téléphone</label>
-							<input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ app.user.phoneNumber }}" required>
-						</div>
-						<div class="mb-3">
-							<label for="email" class="form-label">Email</label>
-							<input type="email" class="form-control" id="email" name="email" value="{{ app.user.email }}" required>
-						</div>
-						<div class="mb-3">
-							<label for="password" class="form-label">Mot de passe</label>
-							<input type="password" class="form-control" id="password" name="password">
-						</div>
-						<div class="mb-3">
-							<label for="city" class="form-label">Ville</label>
-							<input type="text" class="form-control" id="city" name="city" value="{{ app.user.city }}" required>
-						</div>
-						<div class="mb-3">
-							<label for="address" class="form-label">Adresse</label>
-							<input type="text" class="form-control" id="address" name="address" value="{{ app.user.address }}" required>
-						</div>
-						<div class="mb-3">
-							<label for="postalCode" class="form-label">Code Postal</label>
-							<input type="text" class="form-control" id="postalCode" name="postalCode" value="{{ app.user.postalCode }}" required>
-						</div>
-						<button type="submit" class="btn btn-primary">Mettre à jour</button>
-					</form>
+					{% endfor %}
+
+					{{ form_start(formPassword) }}
+					<div class="mb-3">
+						{{ form_label(formPassword.oldPassword) }}
+						{{ form_widget(formPassword.oldPassword, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(formPassword.oldPassword) }}
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(formPassword.newPassword.first) }}
+						{{ form_widget(formPassword.newPassword.first, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(formPassword.newPassword.first) }}
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(formPassword.newPassword.second) }}
+						{{ form_widget(formPassword.newPassword.second, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(formPassword.newPassword.second) }}
+					</div>
+
+					{{ form_end(formPassword) }}
+
 				</div>
 			</div>
 		</div>
