@@ -63,6 +63,9 @@ class UserProfileType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'csrf_protection' => true, // ✅ Protection activée
+            'csrf_field_name' => '_token', // ✅ Nom du champ CSRF dans le formulaire
+            'csrf_token_id'   => 'change_password', // ✅ Identifiant unique pour ce formulaire
         ]);
     }
 }

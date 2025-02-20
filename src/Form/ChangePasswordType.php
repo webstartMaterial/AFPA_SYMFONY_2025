@@ -54,6 +54,10 @@ class ChangePasswordType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([]);
+        $resolver->setDefaults([
+            'csrf_protection' => true, // ✅ Protection activée
+            'csrf_field_name' => '_token', // ✅ Nom du champ CSRF dans le formulaire
+            'csrf_token_id'   => 'change_password', // ✅ Identifiant unique pour ce formulaire
+        ]);
     }
 }
