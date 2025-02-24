@@ -22,6 +22,20 @@
         </div>
     </nav>
 
+    <!-- Formulaire de tri -->
+    <div class="dropdown mb-4">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownSort" data-bs-toggle="dropdown" aria-expanded="false">
+            Trier par
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownSort">
+            <li><a class="dropdown-item {% if sort == 'price_asc' %}active{% endif %}" href="{{ path('app_article', { sort: 'price_asc' }) }}">Prix croissant</a></li>
+            <li><a class="dropdown-item {% if sort == 'price_desc' %}active{% endif %}" href="{{ path('app_article', { sort: 'price_desc' }) }}">Prix décroissant</a></li>
+            <li><a class="dropdown-item {% if sort == 'date_asc' %}active{% endif %}" href="{{ path('app_article', { sort: 'date_asc' }) }}">Date croissante</a></li>
+            <li><a class="dropdown-item {% if sort == 'date_desc' %}active{% endif %}" href="{{ path('app_article', { sort: 'date_desc' }) }}">Date décroissante</a></li>
+        </ul>
+    </div>
+
+
     <!-- Liste des articles -->
     <h2 class="mb-4">Derniers Articles</h2>
     {% if articles|length > 0 %}

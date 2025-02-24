@@ -23,20 +23,35 @@ final class ArticleController extends AbstractController
         Request $request): Response
     {
 
+        // je récupère le paramètre get sort
+        $sort = $request->query->get('sort', 'price_asc');
+
+        $sortOptions = [
+            'price_asc' => ['a.price', 'ASC'],
+            'price_desc' => ['a.price', 'DESC'],
+            'date_asc' => ['a.date', 'ASC'],
+            'date_desc' => ['a.date', 'DESC'],
+        ];
+
+        $sortField = $sortOptions[$sort][0] ?? 'a.price';
+        $sortOrder = $sortOptions[$sort][1] ?? 'ASC';
+
         // ArticleRepository $articleRepositor => injecter le repo de Article
         // et j'ai appelé une méthode prédéfinie de la couche ServiceEntityRepository qui me permet de récupérer
         // tous les articles en BDD
         $categories = $categoryRepository->findAll();
 
         $pagination = $paginator->paginate(
-            $articleRepository->findAll(), /* query NOT result */
+            //$articleRepository->findAll(), /* query NOT result */
+            $articleRepository->findSortByOrder($sortField, $sortOrder),
             $request->query->getInt('page', 1), /* page number */
             5 /* limit per page */
         );
 
         return $this->render('article/index.html.twig', [
             'articles' => $pagination,
-            'categories' => $categories
+            'categories' => $categories,
+            'sort' => $sort
         ]);
     }
 

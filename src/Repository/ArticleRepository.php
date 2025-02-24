@@ -16,21 +16,32 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-       /**
-        * @return Article[] Returns an array of Article objects
-        */
-       public function findArticlesBySearch($search): array
-       {
+    /**
+     * @return Article[] Returns an array of Article objects
+     */
+    public function findArticlesBySearch($search): array
+    {
 
-           return $this->createQueryBuilder('a')
-               ->andWhere('a.description LIKE :search')
-               ->setParameter('search', '%'. $search . '%')
-               ->orderBy('a.id', 'ASC')
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.description LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->orderBy('a.id', 'ASC')
             //    ->setMaxResults(10)
-               ->getQuery()
-               ->getResult()
-           ;
-       }
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Article[] Returns an array of Article objects
+     */
+    public function findSortByOrder($sortField, $sortOrder): array
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy($sortField, $sortOrder)
+            ->getQuery()
+            ->getResult();
+    }
 
     //    public function findOneBySomeField($value): ?Article
     //    {
