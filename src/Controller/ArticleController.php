@@ -29,8 +29,8 @@ final class ArticleController extends AbstractController
         $sortOptions = [
             'price_asc' => ['a.price', 'ASC'],
             'price_desc' => ['a.price', 'DESC'],
-            'date_asc' => ['a.date', 'ASC'],
-            'date_desc' => ['a.date', 'DESC'],
+            'date_asc' => ['a.createdAt', 'ASC'],
+            'date_desc' => ['a.createdAt', 'DESC'],
         ];
 
         $sortField = $sortOptions[$sort][0] ?? 'a.price';

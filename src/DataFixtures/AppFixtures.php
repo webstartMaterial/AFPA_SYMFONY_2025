@@ -7,6 +7,7 @@ use App\Entity\Category;
 use App\Entity\Contact;
 use App\Entity\Order;
 use App\Entity\OrderDetails;
+use App\Entity\Review;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -21,11 +22,11 @@ class AppFixtures extends Fixture
         $faker = \Faker\Factory::create("fr_FR");
 
 
-        for ($i=0; $i < 5 ; $i++) { 
-           
+        for ($i = 0; $i < 5; $i++) {
+
             //// CATEGORY
             $category = new Category();
-            $category->setName($faker->word());    
+            $category->setName($faker->word());
             $manager->persist($category);
 
             /// ARTICLE
@@ -36,24 +37,33 @@ class AppFixtures extends Fixture
             $article->setPicture($faker->imageUrl);
             $article->setPrice($faker->numberBetween(10, 40));
             $article->setStock($faker->numberBetween(10, 40));
+            $article->setCreatedAt($faker->dateTimeThisMonth());
             $manager->persist($article);
-    
+
             /// USER
             $user = new User();
             $user->setEmail($faker->email);
             $user->setPassword($faker->password);
+            $user->setFirstName($faker->firstName);
+            $user->setLastName($faker->lastName);
+            $user->setCity($faker->city);
+            $user->setAddress($faker->address);
+            $user->setPostalCode($faker->postcode);
+            $user->setPhoneNumber("0000000000");
             // $user->setRoles([""]);
             $manager->persist($user);
-    
+
             /// COMMANDE
             $order = new Order();
             $order->setAmount($faker->numberBetween(10, 40));
             $order->setDate(new \DateTime());
             $order->setStatus('En cours');
+            $order->setInvoice("invoice1.pdf");
+            $order->setUser($user);
             $manager->persist($order);
-    
+
             /// DETAILS DE COMMANDES
-            for ($j=0; $j < 5; $j++) { 
+            for ($j = 0; $j < 5; $j++) {
                 $order_detail = new OrderDetails();
                 $order_detail->setArticle($article);
                 $order_detail->setQuantity($faker->numberBetween(1, 4));
@@ -61,7 +71,7 @@ class AppFixtures extends Fixture
                 $order_detail->setSubtotal($faker->numberBetween(10, 40));
                 $manager->persist($order_detail);
             }
-    
+
             /// CONTACT
             $contact = new Contact();
             $contact->setDate(new \DateTime());
@@ -72,8 +82,20 @@ class AppFixtures extends Fixture
             $contact->setEmail($faker->email);
             $manager->persist($contact);
 
+
+            /// REVIEW
+            for ($k = 0; $k < 5 + $i; $k++) {
+
+                $review = new Review();
+                $review->setArticle($article);
+                $review->setComment($faker->text);
+                $review->setUser($user);
+                $review->setCreateAt($faker->dateTimeThisMonth());
+                $manager->persist($review);
+
+            }
         }
-        
+
 
         $manager->flush();
     }

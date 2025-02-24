@@ -47,6 +47,9 @@ class Article
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'article')]
     private Collection $reviews;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
+
     public function __construct()
     {
         $this->orderDetails = new ArrayCollection();
@@ -186,6 +189,18 @@ class Article
                 $review->setArticle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
