@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello OrderController!
+{% endblock %}
+
+{% block body %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin: 20px;
+            color: #333;
+        }
+        .invoice-container {
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #007BFF;
+        }
+        .company-info, .client-info {
+            margin-bottom: 20px;
+        }
+        .company-info p, .client-info p {
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            font-weight: bold;
+            text-align: right;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="header">
+            <h1>Facture</h1>
+            <p>Date : {{ date|date('d/m/Y') }}</p>
+        </div>
+
+        <div class="client-info">
+            <p><strong>Client :</strong> {{ user.email }}</p>
+            <p>ID Client : {{ user.id }}</p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Article</th>
+                    <th>Quantité</th>
+                    <th>Prix Unitaire</th>
+                    <th>Sous-total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_details %}
+                    <tr>
+                        <td>{{ item.article.title }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.article.price|number_format(2, ',', ' ') }} €</td>
+                        <td>{{ (item.quantity * item.article.price)|number_format(2, ',', ' ') }} €</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3" class="total">Total :</td>
+                    <td class="total">{{ total_amount|number_format(2, ',', ' ') }} €</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>
+
+
+{% endblock %}
