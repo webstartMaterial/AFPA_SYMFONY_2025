@@ -59,7 +59,17 @@
 					<td>{{order.amount}}€</td>
 					<td>{{order.user.firstName}}
 						{{order.user.lastName}}</td>
-					<td>{{order.status}}</td>
+
+
+					<td>
+                        <select class="form-select status-select" data-order-id="{{ order.id }}">
+                            <option value="pending" {{ order.status == 'pending' ? 'selected' : '' }}>En attente</option>
+                            <option value="shipped" {{ order.status == 'shipped' ? 'selected' : '' }}>Expédiée</option>
+                            <option value="delivered" {{ order.status == 'delivered' ? 'selected' : '' }}>Livrée</option>
+                            <option value="canceled" {{ order.status == 'canceled' ? 'selected' : '' }}>Annulée</option>
+                        </select>
+                    </td>
+
 				</tr>
 			{% endfor %}
 
