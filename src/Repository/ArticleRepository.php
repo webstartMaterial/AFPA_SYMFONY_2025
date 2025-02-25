@@ -23,7 +23,7 @@ class ArticleRepository extends ServiceEntityRepository
     {
 
         return $this->createQueryBuilder('a')
-            ->andWhere('a.description LIKE :search')
+            ->andWhere('a.description LIKE :search OR a.title LIKE :search')
             ->setParameter('search', '%' . $search . '%')
             ->orderBy('a.id', 'ASC')
             //    ->setMaxResults(10)

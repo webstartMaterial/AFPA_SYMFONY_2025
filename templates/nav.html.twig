@@ -1,3 +1,13 @@
+<style>
+
+	#suggestions-list {
+		width:80%;
+		z-index:9999;
+	}
+
+</style>
+
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="{{ path('app_home') }}">Logo</a>
@@ -39,7 +49,8 @@
 
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						🌍 {{ app.request.locale|upper }}
+						🌍
+						{{ app.request.locale|upper }}
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="languageDropdown">
 						<li>
@@ -55,10 +66,71 @@
 				</li>
 			</ul>
 			<!-- Barre de recherche -->
-			<form class="d-flex ms-3" action="{{ path('app_search') }}" method="GET">
-				<input class="form-control me-2" type="search" placeholder="Rechercher" aria-label="Search" name="search">
+			<form class="d-flex ms-3 position-relative" action="{{path('app_search')}}">
+				<input class="form-control me-2" autocomplete="off" id="article-search" type="text" placeholder="Rechercher" aria-label="Search" name="search">
+
 				<button class="btn btn-outline-primary" type="submit">🔍</button>
+
+				<!-- Liste des suggestions -->
+				<ul id="suggestions-list" class="list-group position-absolute mt-2 shadow d-none"></ul>
 			</form>
+
 		</div>
 	</div>
 </nav>
+
+<script>
+
+	document.addEventListener("DOMContentLoaded", function () { // quand la page est entièrrement chargée
+		const searchInput = document.getElementById("article-search"); // je récupère la balise qui a l'id article-search
+		const suggestionsList = document.getElementById("suggestions-list");
+		// je récupère la balise qui a l'id article-list
+
+		// j'utilise ici async et await (ES6)
+		// await attends la réponse du serveur
+		// et pour fonctoonner la fonction doit être async
+
+		searchInput.addEventListener("input", async function () { // j'écoute l'évenement où je tape un truc dans mon champ search
+		const query = this.value.trim(); // je récupère la valeur à l'intérieur sans espace blancs
+		if (query.length < 2) 
+			return;
+		// Éviter les requêtes inutiles si moins de 2 caractères
+
+		try { // j'essaie de contacter le serveur en asynchrnoe avec l'api fetch
+			const response = await fetch(`/search/suggestions?search=${encodeURIComponent(query)}`);
+			const suggestions = await response.json(); // je traite la réponse sous forme d'objet json
+
+			// Nettoyer le datalist
+			suggestionsList.innerHTML = "";
+			// je vide ma datalist
+
+			// Ajouter les suggestions
+            suggestions.forEach(article => {
+                const li = document.createElement("li");
+                li.classList.add("list-group-item", "list-group-item-action");
+                li.textContent = article.title;
+                li.addEventListener("click", function() {
+                    searchInput.value = article.title;
+                    suggestionsList.classList.add("d-none");
+                });
+                suggestionsList.appendChild(li);
+            });
+
+            suggestionsList.classList.remove("d-none");
+
+			setTimeout(() => {
+				searchInput.focus(); // Force l'affichage des suggestions
+			}, 100);
+		} catch (error) { // si j'ai une erreur je l'affiche en console
+			console.error("Erreur lors du chargement des suggestions :", error);
+		}
+		});
+
+		// Cacher la liste si on clique en dehors
+		document.addEventListener("click", function(event) {
+			if (!searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
+				suggestionsList.classList.add("d-none");
+			}
+		});
+	});
+</script>

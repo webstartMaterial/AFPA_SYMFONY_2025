@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\ArticleRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,4 +30,31 @@ final class SearchController extends AbstractController
             'search' => $search
         ]);
     }
+
+    #[Route('/search/suggestions', name: 'app_search_suggestions', methods:['GET'])]
+    public function getSuggestions(Request $request, ArticleRepository $articleRepository): JsonResponse
+    {
+
+        $search = $request->query->get('search');
+
+        if(!$search) {
+            return $this->json([], 200); // réponse positive du serveur mais je renvois ici un tableau vide
+        }
+
+        $articles = $articleRepository->findArticlesBySearch($search);
+
+        $suggestions = [];
+        foreach ($articles as $article) {
+            
+            $suggestions[] = [
+                'id' => $article->getId(),
+                'title' => $article->getTitle()
+            ];
+            
+        }
+
+        return $this->json($suggestions);
+
+    }
+
 }
