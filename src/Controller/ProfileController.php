@@ -8,11 +8,13 @@ use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class ProfileController extends AbstractController
 {
@@ -29,7 +31,8 @@ final class ProfileController extends AbstractController
         EntityManagerInterface $entityManager, 
         Request $request, 
         UserPasswordHasherInterface $passwordHasher,
-        Security $security): Response
+        Security $security,
+        SluggerInterface $slugger): Response
     {
 
         // Security $security
@@ -48,6 +51,32 @@ final class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Gestion du mot de passe s'il est renseigné
+
+            $photoProfile = $form->get('picture')->getData(); // récupère le fichier
+
+            if($photoProfile) {
+
+                $originalFilename = pathinfo($photoProfile->getClientOriginalName(), PATHINFO_FILENAME);
+                // Récupère le nom original du fichier sans son extension.
+                
+                $safeFilename = $slugger->slug($originalFilename);
+                // Transforme le nom original en une version sécurisée (supprime les caractères spéciaux, espaces, etc.).
+                
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoProfile->guessExtension();
+                // Génère un nom de fichier unique en ajoutant un identifiant unique (`uniqid()`) et en conservant l'extension d'origine.
+
+                try {
+                    $photoProfile->move(
+                        $this->getParameter('profile_pictures_directory'),
+                        $newFilename
+                    );
+                    $user->setPicture($newFilename); // Mise à jour du champ `picture` dans l'entité
+
+                } catch (FileException $e) {
+                    $this->addFlash('danger', 'Erreur lors de l\'upload de l\'image.');
+                }
+
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();

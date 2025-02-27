@@ -15,8 +15,14 @@
 
         {{ form_errors(registrationForm) }}
 
-        {{ form_start(registrationForm) }}
+        {{ form_start(registrationForm, {'attr' : {'class' :'row'} } ) }}
             {{ form_row(registrationForm.email) }}
+            {{ form_row(registrationForm.phoneNumber) }}
+            {{ form_row(registrationForm.firstName) }}
+            {{ form_row(registrationForm.lastName) }}
+            {{ form_row(registrationForm.address) }}
+            {{ form_row(registrationForm.city) }}
+            {{ form_row(registrationForm.postalCode) }}
             {{ form_row(registrationForm.plainPassword, {
                 label: 'Password'
             }) }}

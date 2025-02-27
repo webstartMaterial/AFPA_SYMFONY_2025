@@ -10,8 +10,17 @@ $danger : #e17055;
 $textColor : #000;
 $textSpan : rgba(0,0,0, 0.4);
 
+$bgDark : #1B1F3B;
+$navDark : #2C2F3E;
+$cardDark : #2C2F3E;
+$inputDark : #2C2F3E;
+$btnDark : #4A3F72;
+$txtLight : #ecf0f1;
+
 body {
-    background-color: $primary;
+    background-color: white !important;
+    transition: 0.5s;
+    visibility: hidden;
 
     p {
         color: $textColor;
@@ -21,4 +30,110 @@ body {
         }
 
     }
+}
+
+body.loaded {
+    visibility: visible; /* Affiche quand le JS est prêt */
+}
+
+.no-transition, .no-transition * {
+    transition: none !important;
+}
+
+body.dark-mode {
+    background-color: $bgDark !important;
+    transition: 0.5s;
+}
+
+
+.navbar, h1, h2, h3, h4, h5, h6, .card, .btn, .table, .modal-content {
+    transition: 0.5s;
+}
+
+/* Navbar en mode sombre */
+.dark-mode .navbar {
+    background-color: $navDark !important;
+    color: $txtLight;
+    transition: 0.5s;
+
+}
+
+.dark-mode p,
+.dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode h6 {
+    color: $txtLight;
+    transition: 0.5s;
+
+}
+
+.dark-mode .navbar a {
+    color: $txtLight !important;
+    transition: 0.5s;
+
+}
+
+/* Cartes Bootstrap */
+.dark-mode .card {
+    background-color: $cardDark;
+    color: $txtLight;
+    transition: 0.5s;
+
+}
+
+/* Boutons Bootstrap */
+.dark-mode .btn {
+    background-color: $btnDark;
+    color: $txtLight;
+    border-color: $txtLight;
+    transition: 0.5s;
+
+}
+
+.dark-mode .btn:hover {
+    background-color: $txtLight;
+    color: var(--btn-dark);
+    transition: 0.5s;
+
+}
+
+/* Tableaux Bootstrap */
+.dark-mode .table {
+    background-color: $cardDark;
+    color: $txtLight;
+    transition: 0.5s;
+
+}
+
+.dark-mode .table th,
+.dark-mode .table td {
+    background-color: $cardDark;
+    border-color: $txtLight;
+    color: $txtLight;
+    transition: 0.5s;
+
+}
+
+/* Modals en mode sombre */
+.dark-mode .modal-content {
+    background-color: $cardDark;
+    color: $txtLight;
+    transition: 0.5s;
+}
+
+.dark-mode label {
+    color: $txtLight;
+    transition: 0.5s;
+}
+
+.dark-mode input {
+    background-color: $inputDark;
+    color: $txtLight;
+    transition: 0.5s;
+}
+
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+    color: $txtLight;
+    opacity: 0.7; /* Réduit l'opacité du texte */
+    transition: 0.5s;
+
 }

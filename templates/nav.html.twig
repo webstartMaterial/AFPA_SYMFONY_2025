@@ -15,7 +15,7 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav ms-auto">
+			<ul class="navbar-nav ms-auto d-flex align-items-center">
 				<li class="nav-item">
 					<a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
 				</li>
@@ -64,6 +64,14 @@
 						</li>
 					</ul>
 				</li>
+
+				<li class="nav-item">
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" role="switch" id="darkMode">
+						<label class="form-check-label" id="labelDarkMode" for="darkMode">Light mode</label>
+					</div>
+				</li>
+
 			</ul>
 			<!-- Barre de recherche -->
 			<form class="d-flex ms-3 position-relative" action="{{path('app_search')}}">
@@ -132,5 +140,46 @@
 				suggestionsList.classList.add("d-none");
 			}
 		});
+
+
+		// au chargement de la page, j'enlève la transition à mes éléments html pour ne pas avoir de transition
+		// a chaque chargement de page et avoir un effet pénible qui passe du light mode au darkmode
+		document.body.classList.add("no-transition");
+
+		// si en session j'ai le darkMode je l'applique sur mon body
+		if (localStorage.getItem("darkMode") === "enabled") {
+			console.log("dark-mode")
+			document.body.classList.add("dark-mode");
+			document.getElementById("darkMode").checked = true;
+			document.getElementById("labelDarkMode").innerHTML = "Dark Mode";
+		}
+
+		// Supprimer la classe 'no-transition' après un court délai
+		// pour que la transition puisse s'appliquer onChange
+		setTimeout(() => {
+			document.body.classList.remove("no-transition");
+		}, 20);
+
+		// Une fois que le mode est appliqué, on affiche le contenu
+    	document.body.classList.add("loaded");
+
+		// je capte le moment ou j'active/désactive le darkMode
+		document.getElementById("darkMode").addEventListener("change", function() {
+
+				document.body.classList.toggle("dark-mode");
+
+				// si mon body a la classe dark-mode
+				// je le stock dans le cache du navigateur pour la prochaine page que je vais parcourir
+				if (document.body.classList.contains("dark-mode")) {
+					document.getElementById("labelDarkMode").innerHTML = "Dark Mode";
+					localStorage.setItem("darkMode", "enabled");
+				} else {
+					document.getElementById("labelDarkMode").innerHTML = "Light Mode";
+					localStorage.setItem("darkMode", "disabled");
+				}
+
+		});
+
 	});
+
 </script>

@@ -11,6 +11,9 @@
 			<div class="col-md-4">
 				<div class="card shadow-sm p-3">
 					<h5 class="card-title">Informations personnelles</h5>
+					{% if app.user.picture is not null and app.user.picture is not empty %}
+						<img src="{{asset('uploads/profile_pictures/' ~ app.user.picture )}}" />
+					{% endif %}
 					<p>
 						<strong>Nom :</strong>
 						{{ app.user.lastName }}</p>
@@ -116,6 +119,12 @@
 						{{ form_label(userProfileForm.postalCode) }}
 						{{ form_widget(userProfileForm.postalCode, {'attr': {'class': 'form-control'}}) }}
 						<div class="text-danger"> {{ form_errors(userProfileForm.postalCode) }}</div>
+					</div>
+
+					<div class="mb-3">
+						{{ form_label(userProfileForm.picture) }}
+						{{ form_widget(userProfileForm.picture, {'attr': {'class': 'form-control'}}) }}
+						<div class="text-danger"> {{ form_errors(userProfileForm.picture) }}</div>
 					</div>
 
 					{{ form_end(userProfileForm) }}

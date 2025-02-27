@@ -5,12 +5,14 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -19,6 +21,18 @@ class UserProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('picture', FileType::class, [
+                'label' => 'Avatar',
+                'mapped' => false, // ne lie pas directement le champ à la colonne picture de User
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => ['image/jpeg', 'image/png'],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image au format JPEG ou PNG.',
+                    ])
+                ],
+            ])
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
                 'constraints' => [
@@ -65,7 +79,7 @@ class UserProfileType extends AbstractType
             'data_class' => User::class,
             'csrf_protection' => true, // ✅ Protection activée
             'csrf_field_name' => '_token', // ✅ Nom du champ CSRF dans le formulaire
-            'csrf_token_id'   => 'change_password', // ✅ Identifiant unique pour ce formulaire
+            'csrf_token_id' => 'change_password', // ✅ Identifiant unique pour ce formulaire
         ]);
     }
 }

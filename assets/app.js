@@ -2,7 +2,7 @@ import * as bootstrap from 'bootstrap'; // Important : Import de Bootstrap en ta
 window.bootstrap = bootstrap; // Rendre Bootstrap accessible globalement
 
 // import 'bootstrap/dist/js/bootstrap.bundle.min'; // Ce fichier inclut déjà Popper.js
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import '@fortawesome/fontawesome-free/js/all.js';
