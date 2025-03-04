@@ -40,9 +40,21 @@ else
     git checkout -t origin/main
 fi
 
-# Mise à jour des dépendances PHP
+# Supprimer le cache manuellement avant d'exécuter Composer
+echo "🗑 Suppression manuelle du cache Symfony avant Composer update..."
+rm -rf var/cache/*
+
+# Mise à jour des dépendances PHP avec Composer
 echo "📦 Mise à jour des dépendances PHP avec Composer..."
-php "$COMPOSER_PATH" update --no-interaction --optimize-autoloader
+php "$COMPOSER_PATH" update --no-interaction --optimize-autoloader || { echo "❌ Erreur lors de la mise à jour de Composer"; exit 1; }
+
+# Nettoyer le cache après Composer update
+echo "🧹 Nettoyage du cache Symfony..."
+php bin/console cache:clear --no-warmup || { echo "❌ Erreur lors de la suppression du cache"; exit 1; }
+
+# Préchauffer le cache pour éviter les erreurs en production
+echo "🔥 Préchargement du cache Symfony..."
+php bin/console cache:warmup || { echo "❌ Erreur lors du cache warmup"; exit 1; }
 
 # Construire les assets avec NPM
 echo "⚙️  Construction des assets avec NPM..."
