@@ -14,7 +14,7 @@ echo "📍 Répertoire du projet : $PROJECT_DIR"
 if [ -d "$PROJECT_DIR/.git" ]; then
     echo "📥 Le projet existe déjà, mise à jour avec Git pull..."
     cd "$PROJECT_DIR"
-    
+
     # Sauvegarder temporairement les modifications locales
     git stash push -m "Sauvegarde temporaire" --keep-index
     
@@ -49,9 +49,19 @@ echo "⚙️  Construction des assets avec NPM..."
 npm install
 npm run build
 
-# Vérifier si la base de données existe
-echo "🔍 Vérification de l'existence de la base de données..."
-if php bin/console doctrine:database:exists --no-interaction; then
+# Charger les variables d'environnement depuis .env
+export $(grep -v '^#' .env | xargs)
+
+# Extraire les informations de la connexion à la DB depuis DATABASE_URL
+DB_NAME=$(echo $DATABASE_URL | sed -E 's/^.*\/([^?]+).*/\1/')
+DB_USER=$(echo $DATABASE_URL | sed -E 's/^mysql:\/\/([^:]+):.*$/\1/')
+DB_PASSWORD=$(echo $DATABASE_URL | sed -E 's/^mysql:\/\/[^:]+:([^@]+)@.*$/\1/')
+DB_HOST=$(echo $DATABASE_URL | sed -E 's/^mysql:\/\/[^@]+@([^:/]+).*$/\1/')
+
+echo "🔍 Vérification de l'existence de la base de données $DB_NAME..."
+
+# Vérifier si la base de données existe avec MySQL
+if mysql -u "$DB_USER" -p"$DB_PASSWORD" -h "$DB_HOST" -e "USE $DB_NAME;" 2>/dev/null; then
     echo "✅ La base de données existe déjà."
 else
     echo "🚀 La base de données n'existe pas, création en cours..."
