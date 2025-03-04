@@ -41,7 +41,7 @@ final class ContactController extends AbstractController
 
                 // TODO : envoyer un email
 
-                $emailService->sendEmailNoAttachement($this->getUser()->getEmail(), ['contact' => $contact], 'Votre email','email/contact.html.twig');
+                $emailService->sendEmailNoAttachement($contact->getEmail(), ['contact' => $contact], 'Votre email','email/contact.html.twig');
 
                 // Redirection vers la même route pour éviter une double soumission
                 return $this->redirectToRoute('app_contact');
