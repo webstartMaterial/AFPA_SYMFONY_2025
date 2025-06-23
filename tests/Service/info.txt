@@ -1,0 +1,32 @@
+🧪 1. Qu’est-ce qu’un test unitaire ?
+▶️ Définition :
+Un test unitaire vérifie une seule unité de code (souvent une méthode ou une classe) de manière isolée.
+
+But : s’assurer que chaque composant fonctionne indépendamment des autres.
+
+✅ Ce que ça teste :
+Le code métier
+
+- Les calculs
+- Les conditions
+- Les exceptions
+
+❌ Ce que ça ne teste pas :
+- L’interaction avec une base de données
+- L’appel d’un service externe
+- Les routes ou contrôleurs Symfony
+
+
+🗂️ Étape 1 : Créer un service simple
+Fichier : src/Service/PriceCalculator.php
+
+
+🧪 Étape 2 : Créer le test unitaire
+Fichier : tests/Service/PriceCalculatorTest.php
+
+⚙️ Étape 3 : Lancer les tests
+1. Assure-toi que PHPUnit est installé :
+composer require --dev phpunit/phpunit
+
+2. Exécute les tests :
+php bin/phpunit

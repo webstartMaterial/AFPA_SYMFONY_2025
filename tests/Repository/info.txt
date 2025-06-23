@@ -1,0 +1,37 @@
+🔄 2. Qu’est-ce qu’un test d’intégration ?
+▶️ Définition :
+Un test d’intégration vérifie que plusieurs composants fonctionnent ensemble correctement.
+
+But : s’assurer que les différents modules interagissent bien entre eux (ex : entité + base de données + repository).
+
+Exemple :
+    Tu veux tester que tu peux créer un objet Product, l’enregistrer en base, et le retrouver ensuite.
+
+
+✅ Ce que ça teste :
+    L’interaction avec la base de données
+    Le fonctionnement réel des services Symfony
+    Les entités, repositories, voire les appels HTTP
+
+❌ Ce que ça ne garantit pas :
+    Que chaque méthode est parfaitement correcte en elle-même (ça c’est le rôle du test unitaire)
+
+
+
+📦 Pré-requis techniques
+1. Base de données de test
+    Vérifie que tu as bien un fichier .env.test avec une ligne comme :
+
+    DATABASE_URL="sqlite:///%kernel.project_dir%/var/test.db"
+
+
+2. Crée le schéma de test
+    php bin/console doctrine:database:create --env=test
+    php bin/console doctrine:schema:update --force --env=test
+
+🎯 Ce que ce test vérifie
+Éléments testés	                        Méthode utilisée
+Création et persistance d’un article	persist() + flush()
+Association avec une catégorie	        setCategory() et lien ORM
+Lecture en base	                        find() via le repository
+Validité des champs	                    assertEquals(...)
